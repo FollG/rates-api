@@ -1,0 +1,27 @@
+{
+    "name": "rosmaksimov/rates-api",
+    "description": "An API that lets you see currency differences and exchange rates",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rostislav Maksimov",
+            "email": "ros.maksimov@mail.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "yiisoft/yii2": "^2.0.55"
+    },
+    "replace": {
+        "bower-asset/jquery": "*",
+        "bower-asset/inputmask": "*",
+        "bower-asset/punycode": "*",
+        "bower-asset/yii2-pjax": "*"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
+    }
+}

@@ -1,0 +1,16 @@
+# dependencies
+/vendor/
+
+# runtime
+/runtime/
+
+# ide
+.idea/
+
+# macos
+.DS_Store
+
+# environment
+.env
+.env.local
+.env.*.local
