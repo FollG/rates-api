@@ -12,7 +12,7 @@ use DateTimeImmutable;
 final readonly class RatesResponseMapper
 {
     public function map(
-        Rates $rates
+        Rates $rates,
     ): ApiResponse {
 
         return ApiResponse::success(

@@ -73,11 +73,6 @@ final class CoinCapProvider extends AbstractRateProvider implements RateProvider
                 currency: $currency,
                 usdRate: (float)$item['rateUsd']
             );
-
-            $rates[] = new Rate(
-                currency: $currency,
-                usdRate: (float)$item['rateUsd']
-            );
         }
 
         if ($rates === []) {

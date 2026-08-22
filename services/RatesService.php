@@ -17,39 +17,24 @@ final readonly class RatesService
     }
 
 
-    public function getRatesWithCommission(): Rates
+    public function getRatesWithCommission(?string $currencies = null): Rates
     {
-        return $this->calculator
+        $rates = $this->calculator
             ->applyCommission($this->repository->getRates())
             ->sortByRate();
+
+        if ($currencies === null || $currencies === '') {
+            return $rates;
+        }
+
+        return $rates->filterByCurrencies(
+            explode(',', $currencies)
+        );
     }
 
     public function getRawRates(): Rates
     {
         return $this->repository
             ->getRates();
-    }
-
-    private function filterCurrencies(array $rates, ?string $currency): array
-    {
-        if ($currency === null || $currency === '') {
-            return $rates;
-        }
-
-        $requestedCurrencies = array_map(
-            'trim',
-            explode(',', strtoupper($currency))
-        );
-
-        return array_filter(
-            $rates,
-            static function ($rate) use ($requestedCurrencies) {
-                return in_array(
-                    $rate->getCurrency(),
-                    $requestedCurrencies,
-                    true
-                );
-            }
-        );
     }
 }

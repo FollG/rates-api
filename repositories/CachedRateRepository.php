@@ -22,6 +22,9 @@ final readonly class CachedRateRepository implements RateRepositoryInterface
     ) {
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function getRates(): Rates
     {
         $fresh = $this->cache->get(
@@ -37,30 +40,38 @@ final readonly class CachedRateRepository implements RateRepositoryInterface
 
         try {
             $rates = $this->repository->getRates();
+
             $serialized = json_encode(
                 $rates->toCacheArray()
             );
+
             $this->cache->set(
                 self::FRESH_CACHE_KEY,
                 $serialized,
                 $this->freshTtl
             );
+
             $this->cache->set(
                 self::FALLBACK_CACHE_KEY,
                 $serialized,
                 $this->fallbackTtl
             );
+
             return $rates;
+
         } catch (\Throwable $e) {
+
             $fallback = $this->cache->get(
                 self::FALLBACK_CACHE_KEY
             );
+
             if ($fallback !== null) {
                 return Rates::fromArray(
-                    json_decode($fresh, true),
+                    json_decode($fallback, true),
                     $this->currencyRegistry
                 );
             }
+
             throw $e;
         }
     }

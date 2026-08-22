@@ -34,7 +34,7 @@ final readonly class ApiDispatcher
     ): ApiResponse
     {
         return match ($method) {
-            'rates' => $this->rates($httpMethod),
+            'rates' => $this->rates($httpMethod, $params['currency'] ?? null),
             'convert' => $this->convert($httpMethod, $params),
 
             default => throw new BadRequestHttpException('Unknown method'),
@@ -44,7 +44,7 @@ final readonly class ApiDispatcher
     /**
      * @throws MethodNotAllowedHttpException
      */
-    private function rates(string $httpMethod): ApiResponse
+    private function rates(string $httpMethod, ?string $currencies): ApiResponse
     {
 
         if ($httpMethod !== 'GET') {
@@ -52,8 +52,7 @@ final readonly class ApiDispatcher
         }
 
         return $this->ratesMapper->map(
-            $this->ratesService
-                ->getRatesWithCommission()
+            $this->ratesService->getRatesWithCommission($currencies),
         );
     }
 

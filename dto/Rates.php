@@ -119,4 +119,28 @@ final readonly class Rates
             ),
         ];
     }
+
+    public function filterByCurrencies(?array $currencies): self
+    {
+        $currencies = array_map(
+            static fn(string $currency): string => strtoupper(trim($currency)),
+            (array)$currencies
+        );
+
+        $filteredRates = array_filter(
+            $this->rates,
+            static function (Rate $rate) use ($currencies): bool {
+                return in_array(
+                    $rate->currency->code,
+                    $currencies,
+                    true
+                );
+            }
+        );
+
+        return new self(
+            base: $this->base,
+            rates: array_values($filteredRates)
+        );
+    }
 }
