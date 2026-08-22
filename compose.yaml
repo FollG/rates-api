@@ -6,9 +6,10 @@ services:
     environment:
       REDIS_HOST: ${REDIS_HOST:-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
+    env_file:
+      - .env
     volumes:
       - .:/var/www/html
-      - vendor:/var/www/html/vendor
       - runtime:/var/www/html/runtime
 
   nginx:
