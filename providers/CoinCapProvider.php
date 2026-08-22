@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace app\providers;
 
-
 use app\components\HttpClient;
 use app\dto\Rate;
 use app\dto\Rates;
 use app\exceptions\ProviderException;
 use app\providers\interfaces\RateProviderInterface;
 
-final  class CoinCapProvider extends AbstractRateProvider implements RateProviderInterface
+final class CoinCapProvider extends AbstractRateProvider implements RateProviderInterface
 {
     public function __construct(
         private readonly HttpClient $client,
-        private readonly string     $url,
+        private readonly string $url,
     ) {
     }
 
@@ -23,8 +22,10 @@ final  class CoinCapProvider extends AbstractRateProvider implements RateProvide
     public function fetch(): Rates
     {
         return $this->execute(
-            function () {
-                $data = $this->client->get($this->url);
+            function (): Rates {
+                $data = $this->client->get(
+                    $this->url
+                );
 
                 if (
                     empty($data['data'])
@@ -35,11 +36,12 @@ final  class CoinCapProvider extends AbstractRateProvider implements RateProvide
                     );
                 }
 
-                return $this->normalize($data['data']);
+                return $this->normalize(
+                    $data['data']
+                );
             },
             'CoinCap'
         );
-
     }
 
     private function normalize(array $items): Rates
@@ -47,6 +49,16 @@ final  class CoinCapProvider extends AbstractRateProvider implements RateProvide
         $rates = [];
 
         foreach ($items as $item) {
+
+            if (
+                !isset(
+                    $item['symbol'],
+                    $item['rateUsd']
+                )
+            ) {
+                continue;
+            }
+
             $rates[] = new Rate(
                 currency: strtoupper($item['symbol']),
                 usdRate: (float)$item['rateUsd']
@@ -55,7 +67,7 @@ final  class CoinCapProvider extends AbstractRateProvider implements RateProvide
 
         if ($rates === []) {
             throw new ProviderException(
-        'Provider returned empty rates'
+                'CoinCap returned empty rates'
             );
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\providers;
 
 use app\components\HttpClient;
@@ -7,65 +9,69 @@ use app\dto\Rate;
 use app\dto\Rates;
 use app\exceptions\ProviderException;
 use app\providers\interfaces\RateProviderInterface;
-use RuntimeException;
 
-class CoinGateProvider extends AbstractRateProvider
+final class CoinGateProvider extends AbstractRateProvider implements RateProviderInterface
 {
     public function __construct(
         private readonly HttpClient $client,
-        private readonly string     $url,
+        private readonly string $url,
     ) {
     }
 
 
     public function fetch(): Rates
     {
-        try {
-
-            $response = $this->client->get(
-                $this->url
-            );
-
-            if (!isset($response['merchant']) || empty($response)) {
-                throw new ProviderException(
-                    'Invalid CoinGate response'
+        return $this->execute(
+            function (): Rates {
+                $data = $this->client->get(
+                    $this->url
                 );
-            }
 
+                if (
+                    empty($data['merchant'])
+                    || !is_array($data['merchant'])
+                ) {
+                    throw new ProviderException(
+                        'Invalid CoinGate response'
+                    );
+                }
 
-            return $this->normalize(
-                $response['merchant']
-            );
-
-
-        } catch (\Throwable $e) {
-
-            throw new ProviderException(
-                'CoinGate unavailable',
-                0,
-                $e
-            );
-        }
+                return $this->normalize(
+                    $data['merchant']
+                );
+            },
+            'CoinGate'
+        );
     }
 
 
-    private function normalize(array $merchant): Rates
-    {
-        $result = [];
-
+    private function normalize(
+        array $merchant
+    ): Rates {
+        $rates = [];
 
         foreach ($merchant as $currency => $value) {
+            if (
+                !isset($value['USD'])
+            ) {
+                continue;
+            }
 
-            $result[] = new Rate(
+            $rates[] = new Rate(
                 currency: strtoupper($currency),
                 usdRate: (float) $value['USD']
             );
         }
 
+        if ($rates === []) {
+            throw new ProviderException(
+                'CoinGate returned empty rates'
+            );
+        }
 
         return new Rates(
             base: 'USD',
-            rates: $result
+            rates: $rates
         );
     }
 }
