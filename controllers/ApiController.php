@@ -109,10 +109,11 @@ final class ApiController extends Controller
      */
     private function convert(array $data): array
     {
-        $request = new ConvertRequest(
-            currencyFrom: $data['currency_from'],
-            currencyTo: $data['currency_to'],
-            value: $data['value'],
+        $request = ConvertRequest::fromArray(
+            array_merge(
+                Yii::$app->request->queryParams,
+                Yii::$app->request->post()
+            )
         );
 
         $result = $this->conversionService->convert($request);

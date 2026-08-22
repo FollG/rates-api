@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\services;
 
 use app\dto\ConversionResult;
+use app\exceptions\ApiException;
 use app\requests\ConvertRequest;
 use app\repositories\interfaces\RateRepositoryInterface;
 use DateTimeImmutable;
@@ -39,8 +40,9 @@ final readonly class ConversionService
             $fromRate === null ||
             $toRate === null
         ) {
-            throw new RuntimeException(
-                'Unsupported currency'
+            throw new ApiException(
+                'Unsupported currency',
+                400
             );
         }
 
