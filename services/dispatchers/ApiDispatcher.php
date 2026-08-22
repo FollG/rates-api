@@ -18,8 +18,8 @@ final readonly class ApiDispatcher
     public function __construct(
         private RatesService $ratesService,
         private ConversionService $conversionService,
-        private readonly RatesResponseMapper $ratesMapper,
-        private readonly ConversionResponseMapper $conversionMapper,
+        private RatesResponseMapper $ratesMapper,
+        private ConversionResponseMapper $conversionMapper,
     ) {
     }
 
@@ -28,7 +28,7 @@ final readonly class ApiDispatcher
      * @throws MethodNotAllowedHttpException
      */
     public function dispatch(
-        string $method,
+        ?string $method,
         string $httpMethod,
         array $params
     ): ApiResponse

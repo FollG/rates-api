@@ -9,11 +9,13 @@ use app\dto\Rate;
 use app\dto\Rates;
 use app\exceptions\ProviderException;
 use app\providers\interfaces\RateProviderInterface;
+use app\services\CurrencyRegistry;
 
 final class CoinCapProvider extends AbstractRateProvider implements RateProviderInterface
 {
     public function __construct(
         private readonly HttpClient $client,
+        private readonly CurrencyRegistry $currencyRegistry,
         private readonly string $url,
     ) {
     }
@@ -59,8 +61,21 @@ final class CoinCapProvider extends AbstractRateProvider implements RateProvider
                 continue;
             }
 
+            $currency = $this->currencyRegistry->get(
+                $item['symbol']
+            );
+
+            if ($currency === null) {
+                continue;
+            }
+
             $rates[] = new Rate(
-                currency: strtoupper($item['symbol']),
+                currency: $currency,
+                usdRate: (float)$item['rateUsd']
+            );
+
+            $rates[] = new Rate(
+                currency: $currency,
                 usdRate: (float)$item['rateUsd']
             );
         }

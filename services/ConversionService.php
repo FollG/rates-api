@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace app\services;
 
-use app\dto\ConversionResult;
+use app\dto\Rates;
 use app\exceptions\ApiException;
+use app\dto\ConversionResult;
 use app\requests\ConvertRequest;
-use app\repositories\interfaces\RateRepositoryInterface;
 use DateTimeImmutable;
-use RuntimeException;
 
 
 final readonly class ConversionService
@@ -18,6 +17,7 @@ final readonly class ConversionService
         private RatesService $ratesService,
         private RateCalculator $calculator,
         private AmountRounder $rounder,
+        private CurrencyRegistry $currencyRegistry,
     ) {
     }
 
@@ -27,14 +27,36 @@ final readonly class ConversionService
     ): ConversionResult {
 
         $rates = $this->ratesService->getRawRates();
-        $from = strtoupper(
+
+
+        $from = $this->currencyRegistry->get(
             $request->currencyFrom
         );
-        $to = strtoupper(
+
+        $to = $this->currencyRegistry->get(
             $request->currencyTo
         );
-        $fromRate = $rates->get($from);
-        $toRate = $rates->get($to);
+
+
+        if (
+            $from === null ||
+            $to === null
+        ) {
+            throw new ApiException(
+                'Unsupported currency',
+                400
+            );
+        }
+
+
+        $fromRate = $rates->get(
+            $from->code
+        );
+
+        $toRate = $rates->get(
+            $to->code
+        );
+
 
         if (
             $fromRate === null ||
@@ -46,30 +68,26 @@ final readonly class ConversionService
             );
         }
 
-        $converted =
-            $this->calculator->convert(
-                (float)$request->value,
-                $fromRate,
-                $toRate
-            );
+        $converted = $this->calculator->convert(
+            (float)$request->value,
+            $fromRate,
+            $toRate
+        );
+
 
         return new ConversionResult(
-            currencyFrom: $from,
-            currencyTo: $to,
+            currencyFrom: $from->code,
+            currencyTo: $to->code,
             value: $request->value,
-            rate: $this->rounder->roundRate(
-                $this->calculator->calculateRate(
-                    $fromRate,
-                    $toRate
-                ),
-                10
+            rate: (string)$this->calculator->calculateRate(
+                $fromRate,
+                $toRate
             ),
             convertedValue: $this->rounder->round(
                 $converted,
                 $to
             ),
-            fetchedAt:
-            new DateTimeImmutable()
+            fetchedAt: new DateTimeImmutable()
         );
     }
 }

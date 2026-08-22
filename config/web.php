@@ -15,6 +15,7 @@ use app\repositories\CachedRateRepository;
 use app\repositories\RateRepository;
 use app\repositories\interfaces\RateRepositoryInterface;
 use app\services\CommissionService;
+use app\services\CurrencyRegistry;
 use app\services\RateCalculator;
 use Predis\Client;
 use yii\web\Response;
@@ -132,6 +133,10 @@ return [
 
             ConversionResponseMapper::class => [
                 'class' => ConversionResponseMapper::class,
+            ],
+
+            CurrencyRegistry::class => [
+                'class' => CurrencyRegistry::class,
             ],
         ],
     ],

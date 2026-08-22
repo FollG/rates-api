@@ -29,4 +29,27 @@ final readonly class RatesService
         return $this->repository
             ->getRates();
     }
+
+    private function filterCurrencies(array $rates, ?string $currency): array
+    {
+        if ($currency === null || $currency === '') {
+            return $rates;
+        }
+
+        $requestedCurrencies = array_map(
+            'trim',
+            explode(',', strtoupper($currency))
+        );
+
+        return array_filter(
+            $rates,
+            static function ($rate) use ($requestedCurrencies) {
+                return in_array(
+                    $rate->getCurrency(),
+                    $requestedCurrencies,
+                    true
+                );
+            }
+        );
+    }
 }

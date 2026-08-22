@@ -5,6 +5,7 @@ namespace app\repositories;
 use app\components\RedisCache;
 use app\dto\Rates;
 use app\repositories\interfaces\RateRepositoryInterface;
+use app\services\CurrencyRegistry;
 
 final readonly class CachedRateRepository implements RateRepositoryInterface
 {
@@ -17,6 +18,7 @@ final readonly class CachedRateRepository implements RateRepositoryInterface
         private RedisCache $cache,
         private int $freshTtl,
         private int $fallbackTtl,
+        private CurrencyRegistry $currencyRegistry,
     ) {
     }
 
@@ -28,7 +30,8 @@ final readonly class CachedRateRepository implements RateRepositoryInterface
 
         if ($fresh !== null) {
             return Rates::fromArray(
-                json_decode($fresh, true)
+                json_decode($fresh, true),
+                $this->currencyRegistry
             );
         }
 
@@ -54,7 +57,8 @@ final readonly class CachedRateRepository implements RateRepositoryInterface
             );
             if ($fallback !== null) {
                 return Rates::fromArray(
-                    json_decode($fallback, true)
+                    json_decode($fresh, true),
+                    $this->currencyRegistry
                 );
             }
             throw $e;

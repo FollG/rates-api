@@ -30,27 +30,10 @@ final readonly class RatesResponseMapper
         $result = [];
 
         foreach ($rates->all() as $rate) {
-
-            $precision =
-                in_array(
-                    $rate->currency,
-                    [
-                        'BTC',
-                        'ETH',
-                        'LTC',
-                        'XRP',
-                        'BCH',
-                        'DOGE',
-                    ],
-                    true
-                )
-                    ? 10
-                    : 2;
-
-            $result[$rate->currency] =
+            $result[$rate->currency->code] =
                 number_format(
                     $rate->usdRate,
-                    $precision,
+                    $rate->currency->precision,
                     '.',
                     ''
                 );
