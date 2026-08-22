@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
+use app\dto\ApiResponse;
 use app\exceptions\ApiException;
 use Yii;
 use yii\web\ErrorHandler;
@@ -25,11 +26,10 @@ final class ApiErrorHandler extends ErrorHandler
 
         $response->statusCode = $code;
 
-        $response->data = [
-            'status' => 'error',
-            'code' => $code,
-            'message' => $this->getMessage($exception),
-        ];
+        $response->data = ApiResponse::error(
+            $this->getMessage($exception),
+            $code
+        );
 
         $response->send();
     }

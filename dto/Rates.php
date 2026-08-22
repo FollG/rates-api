@@ -8,7 +8,7 @@ namespace app\dto;
 use InvalidArgumentException;
 use JsonSerializable;
 
-final readonly class Rates implements JsonSerializable
+final readonly class Rates
 {
     /**
      * @param Rate[] $rates
@@ -71,62 +71,6 @@ final readonly class Rates implements JsonSerializable
         );
 
         return new self('USD', $rates);
-    }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'base' => $this->base,
-            'rates' => array_map(
-                static fn(Rate $rate) => [
-                    'currency' => $rate->currency,
-                    'usdRate' => $rate->usdRate,
-                ],
-                $this->rates
-            ),
-        ];
-    }
-
-    /**
-     * Для JSON ответа API
-     */
-    public function toArray(): array
-    {
-        $result = [];
-
-
-        foreach ($this->rates as $rate) {
-
-
-            $precision =
-                in_array(
-                    $rate->currency,
-                    [
-                        'BTC',
-                        'ETH',
-                        'LTC',
-                        'XRP',
-                        'BCH',
-                        'DOGE'
-                    ],
-                    true
-                )
-                    ? 10
-                    : 2;
-
-
-
-            $result[$rate->currency] =
-                number_format(
-                    $rate->usdRate,
-                    $precision,
-                    '.',
-                    ''
-                );
-        }
-
-
-        return $result;
     }
 
     public static function fromArray(array $data): self

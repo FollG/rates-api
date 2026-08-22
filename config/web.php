@@ -5,6 +5,8 @@ declare(strict_types=1);
 use app\components\ApiErrorHandler;
 use app\components\HttpClient;
 use app\components\RedisCache;
+use app\mappers\ConversionResponseMapper;
+use app\mappers\RatesResponseMapper;
 use app\providers\CoinCapProvider;
 use app\providers\CoinGateProvider;
 use app\providers\ChainRateProvider;
@@ -123,6 +125,14 @@ return [
                     ])
                 );
             },
+
+            RatesResponseMapper::class => [
+                'class' => RatesResponseMapper::class,
+            ],
+
+            ConversionResponseMapper::class => [
+                'class' => ConversionResponseMapper::class,
+            ],
         ],
     ],
 
