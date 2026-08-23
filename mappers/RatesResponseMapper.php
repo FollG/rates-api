@@ -9,7 +9,7 @@ use app\dto\Rates;
 use DateTimeImmutable;
 
 
-final readonly class RatesResponseMapper
+readonly class RatesResponseMapper
 {
     public function map(
         Rates $rates,

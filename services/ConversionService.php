@@ -11,7 +11,7 @@ use app\requests\ConvertRequest;
 use DateTimeImmutable;
 
 
-final readonly class ConversionService
+readonly class ConversionService
 {
     public function __construct(
         private RatesService $ratesService,

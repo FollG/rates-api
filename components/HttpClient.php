@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace app\components;
 
+use yii\base\InvalidConfigException;
 use yii\httpclient\Client as YiiHttpClient;
 use yii\httpclient\CurlTransport;
+use yii\httpclient\Exception;
 
-final class HttpClient
+class HttpClient
 {
     private YiiHttpClient $client;
 
@@ -21,6 +23,10 @@ final class HttpClient
     }
 
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
     public function get(string $url): array
     {
         $response = $this->client

@@ -8,7 +8,7 @@ use app\dto\ApiResponse;
 use app\dto\ConversionResult;
 
 
-final readonly class ConversionResponseMapper
+readonly class ConversionResponseMapper
 {
     public function map(
         ConversionResult $result

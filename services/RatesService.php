@@ -8,7 +8,7 @@ use app\dto\Rates;
 use app\repositories\interfaces\RateRepositoryInterface;
 
 
-final readonly class RatesService
+readonly class RatesService
 {
     public function __construct(
         private RateRepositoryInterface $repository,

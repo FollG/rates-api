@@ -6,12 +6,12 @@ namespace app\dto;
 
 use JsonSerializable;
 
-final readonly class ApiResponse implements JsonSerializable
+readonly class ApiResponse implements JsonSerializable
 {
     public function __construct(
-        private string $status,
-        private int $code,
-        private mixed $data = null,
+        private string  $status,
+        private int     $code,
+        public mixed    $data = null,
         private ?string $message = null,
         private ?string $fetchedAt = null,
     ) {

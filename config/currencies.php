@@ -60,7 +60,7 @@ return [
     ],
     'JPY' => [
         'type' => CurrencyEnum::FIAT,
-        'precision' => 0,
+        'precision' => 2,
         'name' => 'Japanese Yen',
     ],
     'NZD' => [
@@ -95,7 +95,7 @@ return [
     ],
     'HUF' => [
         'type' => CurrencyEnum::FIAT,
-        'precision' => 2,
+        'precision' => 5,
         'name' => 'Hungarian Forint',
     ],
     'INR' => [
@@ -135,7 +135,7 @@ return [
     ],
     'ARS' => [
         'type' => CurrencyEnum::FIAT,
-        'precision' => 2,
+        'precision' => 6,
         'name' => 'Argentine Peso',
     ],
     'THB' => [
@@ -145,12 +145,12 @@ return [
     ],
     'NGN' => [
         'type' => CurrencyEnum::FIAT,
-        'precision' => 2,
+        'precision' => 6,
         'name' => 'Nigerian Naira',
     ],
     'PKR' => [
         'type' => CurrencyEnum::FIAT,
-        'precision' => 2,
+        'precision' => 5,
         'name' => 'Pakistani Rupee',
     ],
     'AED' => [
@@ -180,12 +180,12 @@ return [
     ],
     'CLP' => [
         'type' => CurrencyEnum::FIAT,
-        'precision' => 2,
+        'precision' => 5,
         'name' => 'Chilean Peso',
     ],
     'KRW' => [
         'type' => CurrencyEnum::FIAT,
-        'precision' => 0,
+        'precision' => 5,
         'name' => 'South Korean Won',
     ],
     'EGP' => [
@@ -225,7 +225,7 @@ return [
     ],
     'IDR' => [
         'type' => CurrencyEnum::FIAT,
-        'precision' => 2,
+        'precision' => 6,
         'name' => 'Indonesian Rupiah',
     ],
     'LTC' => [

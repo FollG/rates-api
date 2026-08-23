@@ -6,7 +6,7 @@ namespace app\components;
 
 use Predis\Client;
 
-final readonly class RedisCache
+readonly class RedisCache
 {
     public function __construct(
         private Client $redis,

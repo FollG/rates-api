@@ -8,7 +8,7 @@ namespace app\dto;
 use app\services\CurrencyRegistry;
 use InvalidArgumentException;
 
-final readonly class Rates
+readonly class Rates
 {
     /**
      * @param Rate[] $rates

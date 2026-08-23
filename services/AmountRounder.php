@@ -7,7 +7,7 @@ namespace app\services;
 use app\domain\Currency;
 
 
-final readonly class AmountRounder
+readonly class AmountRounder
 {
     public function round(
         float $value,

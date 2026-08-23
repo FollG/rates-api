@@ -6,7 +6,7 @@ namespace app\services;
 
 use app\domain\Currency;
 
-final class CurrencyRegistry
+class CurrencyRegistry
 {
     /**
      * @var Currency[]

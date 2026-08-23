@@ -13,7 +13,7 @@ use app\services\RatesService;
 use yii\web\BadRequestHttpException;
 use yii\web\MethodNotAllowedHttpException;
 
-final readonly class ApiDispatcher
+readonly class ApiDispatcher
 {
     public function __construct(
         private RatesService $ratesService,
