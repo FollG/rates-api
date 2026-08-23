@@ -50,11 +50,14 @@ final class BearerAuthBehavior extends Behavior
             );
         }
 
-
         $token = substr(
             $header,
             7
         );
+
+        if (!preg_match('/^[a-zA-Z0-9_-]{64}$/', $token)) {
+            throw new ForbiddenHttpException('Invalid token');
+        }
 
         if (!hash_equals(
             Yii::$app->params['apiToken'],
