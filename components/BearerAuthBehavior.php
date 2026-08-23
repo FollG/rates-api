@@ -36,7 +36,7 @@ final class BearerAuthBehavior extends Behavior
 
         if (!$header) {
             throw new ForbiddenHttpException(
-                'Missing Authorization header'
+                'Invalid token'
             );
         }
 
@@ -46,7 +46,7 @@ final class BearerAuthBehavior extends Behavior
             'Bearer '
         )) {
             throw new ForbiddenHttpException(
-                'Invalid authorization format'
+                'Invalid token'
             );
         }
 

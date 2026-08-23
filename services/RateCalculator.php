@@ -7,7 +7,7 @@ namespace app\services;
 use app\dto\Rate;
 use app\dto\Rates;
 
-final readonly class RateCalculator
+readonly class RateCalculator
 {
     public function __construct(
         private CommissionService $commission,

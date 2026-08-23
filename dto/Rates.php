@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace app\dto;
 
 
+use app\services\CurrencyRegistry;
 use InvalidArgumentException;
-use JsonSerializable;
 
-final readonly class Rates implements JsonSerializable
+readonly class Rates
 {
     /**
      * @param Rate[] $rates
      */
     public function __construct(
         public string $base,
-        public array $rates,
-    ) {
+        public array  $rates,
+    )
+    {
         foreach ($this->rates as $rate) {
 
             if (!$rate instanceof Rate) {
@@ -45,7 +46,7 @@ final readonly class Rates implements JsonSerializable
 
         foreach ($this->rates as $rate) {
 
-            if ($rate->currency === $currency) {
+            if ($rate->currency->code === $currency) {
                 return $rate->usdRate;
             }
         }
@@ -66,84 +67,42 @@ final readonly class Rates implements JsonSerializable
 
         usort(
             $rates,
-            static fn (Rate $a, Rate $b) =>
-                $a->usdRate <=> $b->usdRate
+            static fn(Rate $a, Rate $b) => $a->usdRate <=> $b->usdRate
         );
 
         return new self('USD', $rates);
     }
 
-    public function jsonSerialize(): array
-    {
-        return [
-            'base' => $this->base,
-            'rates' => array_map(
-                static fn(Rate $rate) => [
-                    'currency' => $rate->currency,
-                    'usdRate' => $rate->usdRate,
-                ],
-                $this->rates
-            ),
-        ];
-    }
-
-    /**
-     * Для JSON ответа API
-     */
-    public function toArray(): array
-    {
-        $result = [];
-
-
-        foreach ($this->rates as $rate) {
-
-
-            $precision =
-                in_array(
-                    $rate->currency,
-                    [
-                        'BTC',
-                        'ETH',
-                        'LTC',
-                        'XRP',
-                        'BCH',
-                        'DOGE'
-                    ],
-                    true
-                )
-                    ? 10
-                    : 2;
-
-
-
-            $result[$rate->currency] =
-                number_format(
-                    $rate->usdRate,
-                    $precision,
-                    '.',
-                    ''
-                );
-        }
-
-
-        return $result;
-    }
-
-    public static function fromArray(array $data): self
+    public static function fromArray(
+        array            $data,
+        CurrencyRegistry $registry
+    ): self
     {
         $rates = array_map(
-            static function (array $rate): Rate {
+            function (array $rate) use ($registry): Rate {
+
+                $currency = $registry->get(
+                    $rate['currency']
+                );
+
+                if ($currency === null) {
+                    throw new InvalidArgumentException(
+                        "Unknown currency {$rate['currency']}"
+                    );
+                }
+
                 return new Rate(
-                    $rate['currency'],
-                    $rate['usdRate']
+                    $currency,
+                    (float)$rate['usdRate']
                 );
             },
             $data['rates']
         );
 
+
         return new self(
-            $data['base'],
-            $rates
+            base: $data['base'],
+            rates: $rates
         );
     }
 
@@ -153,11 +112,35 @@ final readonly class Rates implements JsonSerializable
             'base' => $this->base,
             'rates' => array_map(
                 static fn(Rate $rate) => [
-                    'currency' => $rate->currency,
+                    'currency' => $rate->currency->code,
                     'usdRate' => $rate->usdRate,
                 ],
                 $this->rates
             ),
         ];
+    }
+
+    public function filterByCurrencies(?array $currencies): self
+    {
+        $currencies = array_map(
+            static fn(string $currency): string => strtoupper(trim($currency)),
+            (array)$currencies
+        );
+
+        $filteredRates = array_filter(
+            $this->rates,
+            static function (Rate $rate) use ($currencies): bool {
+                return in_array(
+                    $rate->currency->code,
+                    $currencies,
+                    true
+                );
+            }
+        );
+
+        return new self(
+            base: $this->base,
+            rates: array_values($filteredRates)
+        );
     }
 }

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace app\dto;
 
+use app\domain\Currency;
+
 final readonly class Rate
 {
     public function __construct(
-        public string $currency,
+        public Currency $currency,
         public float $usdRate,
     ) {
     }

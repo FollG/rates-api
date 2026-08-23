@@ -13,7 +13,8 @@
     "require": {
         "predis/predis": "^2.3",
         "yiisoft/yii2": "^2.0.55",
-        "yiisoft/yii2-httpclient": "^2.0"
+        "yiisoft/yii2-httpclient": "^2.0",
+        "phpunit/phpunit": "^11.5"
     },
     "autoload": {
         "psr-4": {

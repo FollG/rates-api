@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
+use app\components\ApiErrorHandler;
 use app\components\HttpClient;
 use app\components\RedisCache;
+use app\mappers\ConversionResponseMapper;
+use app\mappers\RatesResponseMapper;
 use app\providers\CoinCapProvider;
 use app\providers\CoinGateProvider;
 use app\providers\ChainRateProvider;
@@ -12,8 +15,10 @@ use app\repositories\CachedRateRepository;
 use app\repositories\RateRepository;
 use app\repositories\interfaces\RateRepositoryInterface;
 use app\services\CommissionService;
+use app\services\CurrencyRegistry;
 use app\services\RateCalculator;
 use Predis\Client;
+use yii\web\Response;
 
 $params = require __DIR__ . '/params.php';
 
@@ -46,7 +51,7 @@ return [
         ],
 
         'response' => [
-            'format' => yii\web\Response::FORMAT_JSON,
+            'format' => Response::FORMAT_JSON,
         ],
 
         'log' => [
@@ -60,6 +65,10 @@ return [
                     ],
                 ],
             ],
+        ],
+
+        'errorHandler' => [
+            'class' => ApiErrorHandler::class,
         ],
     ],
 
@@ -117,6 +126,18 @@ return [
                     ])
                 );
             },
+
+            RatesResponseMapper::class => [
+                'class' => RatesResponseMapper::class,
+            ],
+
+            ConversionResponseMapper::class => [
+                'class' => ConversionResponseMapper::class,
+            ],
+
+            CurrencyRegistry::class => [
+                'class' => CurrencyRegistry::class,
+            ],
         ],
     ],
 
